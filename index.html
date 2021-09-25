@@ -1,0 +1,110 @@
+<input type='button' id='click-me' value='click me'>
+
+<script>
+    function clickMe(e) {
+        alert(e.ctrlKey);
+    }
+
+    const element = document.getElementById('click-me');
+
+      element.addEventListener('click', clickMe);
+
+// элемент.addEventListener(событие, функция, useCapture)
+//
+// Первый параметр — тип события (например, "click" или "mousedown").
+//
+// Второй параметр — функция, которая будет вызываться при возникновении события.
+//
+// Третий параметр — логическое значение (true/false), определяющее следует ли отправить событие дальше ("всплывание") или нужно закрыть это событие. Этот параметр необязателен.
+//
+// Обратите внимание, что в имени события не используется префикс "on" — "click" вместо "onclick".
+//
+// element.onclick = clickMe;
+
+    class Car {
+        constructor() {
+            this.speed = 0;
+
+            this.onstopListeners = [];
+
+            this.onstartListeners = [];
+
+            this.onspeedoverflowListeners = [];
+        }
+
+        start() {
+            this.speed = 100;
+
+            this._triggerEvent("start");
+
+            setTimeout(() => {
+                this._triggerEvent("speedoverflow")
+            }, 2000);
+
+            setTimeout(this._stop.bind(this), 5000);
+        }
+
+        _stop() {
+            this.speed = 0;
+            this._triggerEvent("stop");
+        }
+
+        _triggerEvent(eventName) {
+            if (eventName === 'stop') {
+                this.onstopListeners.forEach(function (callback) {
+                    callback();
+                });
+            } else if (eventName === 'start') {
+                this.onstartListeners.forEach(function (callback) {
+                    callback();
+                });
+            } else if (eventName === 'speedoverflow') {
+                this.onspeedoverflowListeners.forEach(function (callback) {
+                    callback();
+                });
+            }
+        }
+
+        addEventListener(eventName, listener) {
+            if (eventName === 'stop') {
+                this.onstopListeners.push(listener)
+            } else if (eventName === 'start') {
+                this.onstartListeners.push(listener)
+            } else if (eventName === 'speedoverflow') {
+                this.onspeedoverflowListeners.push(listener)
+            }
+        }
+    }
+
+    function onStart() {
+        alert('car started');
+        console.log(mers.speed)
+    }
+
+    function onSpeedOverFlow() {
+        alert('speed overflow');
+        console.log(mers.speed)
+    }
+
+    function mishaWantsToKnowWhenCarStopped() {
+        alert('I am Misha and I know the car has stopped');
+        console.log(mers.speed)
+    }
+
+    function dimychWantsToKnowWhenCarStopped() {
+        alert('I am Dimych and I know the car has stopped');
+        console.log(mers.speed)
+    }
+
+    const mers = new Car();
+
+    mers.addEventListener('stop', mishaWantsToKnowWhenCarStopped)
+    mers.addEventListener('stop', dimychWantsToKnowWhenCarStopped)
+
+    mers.addEventListener('start', onStart);
+    mers.addEventListener('speedoverflow', onSpeedOverFlow);
+
+    mers.start();
+
+
+</script>
